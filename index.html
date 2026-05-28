@@ -1,302 +1,242 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的导航页</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>我的专属 AI 智能助手</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('http://files.unn.pp.ua/download/pictures%2Fbackground.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            margin: 0;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: #1e1e2e; 
+            color: #cdd6f4; 
+            display: flex; 
+            height: 100vh; 
+        }
+        /* 侧边栏设置区域 */
+        .sidebar {
+            width: 300px;
+            background-color: #181825;
             padding: 20px;
-            color: #333;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-right: 1px solid #313244;
         }
-        
-        .header {
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        
-        .search-container {
-            padding: 3rem;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 20px;
-        }
-        
-        .search-box {
-            width: 100%;
-            padding: 15px 18px;
-            font-size: 20px;
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .sidebar h2 { font-size: 18px; color: #cba6f7; }
+        .config-group { display: flex; flex-direction: column; gap: 8px; }
+        .config-group label { font-size: 13px; color: #a6adc8; }
+        .config-group input, .config-group select {
+            background-color: #313244;
+            border: 1px solid #45475a;
+            color: #cdd6f4;
+            padding: 10px;
+            border-radius: 6px;
             outline: none;
-            background-color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
+        .config-group input:focus { border-color: #cba6f7; }
+        .tip-box {
+            font-size: 12px;
+            color: #bac2de;
+            background-color: #252538;
+            padding: 10px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+        .tip-box a { color: #89b4fa; text-decoration: none; }
+        .tip-box a:hover { text-decoration: underline; }
+
+        /* 主聊天区域 */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: #1e1e2e;
+        }
+        .chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .message {
+            display: flex;
+            padding: 14px 18px;
+            border-radius: 12px;
+            max-width: 80%;
+            line-height: 1.6;
+            word-break: break-word;
+            font-size: 15px;
+        }
+        .user-message {
+            background-color: #cba6f7;
+            color: #11111b;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .ai-message {
+            background-color: #313244;
+            color: #cdd6f4;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #45475a;
+        }
+        .error-message {
+            background-color: #f38ba8;
+            color: #11111b;
+            align-self: center;
+        }
+
+        /* 底部输入框 */
+        .input-area {
+            padding: 20px 30px 30px 30px;
+            background: linear-gradient(transparent, #1e1e2e 40%);
+            display: flex;
             gap: 12px;
         }
-        
-        .link-item {
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 12px;
-            transition: all 0.2s;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            height: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        textarea {
+            flex: 1;
+            height: 52px;
+            background-color: #313244;
+            border: 1px solid #45475a;
+            border-radius: 8px;
+            color: #cdd6f4;
+            padding: 14px;
+            resize: none;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        
-        .link-item:hover {
-            background-color: rgba(255, 255, 255, 0.85);
-            transform: translateY(-2px);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        textarea:focus { border-color: #cba6f7; }
+        button {
+            background-color: #cba6f7;
+            color: #11111b;
+            border: none;
+            padding: 0 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: opacity 0.2s;
         }
-        
-        .link-item a {
-            text-decoration: none;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-        }
-        
-        .link-icon {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 8px;
-            object-fit: contain;
-        }
-        
-        .link-text {
-            font-size: 14px;
-            text-align: center;
-            word-break: break-word;
-            max-width: 100%;
-        }
-        .foot_marker {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: rgba(255,255,255,0.8);
-            z-index: 999;
-            padding: 10px 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
-        }
-
-        .foot_marker a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            padding: 5px 10px;
-            border-radius: 15px;
-        }
-
-        .foot_marker a:hover {
-            color: #4388e0;
-        }        
+        button:hover { opacity: 0.9; }
+        button:disabled { background-color: #585b70; color: #a6adc8; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <div class="search-container">
-        <form action="https://www.google.com/search" method="get" target="_blank">
-            <input class="search-box" type="text" name="q" placeholder="Google 搜索...">
-        </form>
-    </div>
-    
-    <div class="container">
-        <!-- 第一行 -->
-        <div class="link-item">
-            <a href="https://www.google.com" target="_blank">
-                <img class="link-icon" src="https://www.google.com/favicon.ico" alt="Google">
-                <span class="link-text">Google</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://www.baidu.com" target="_blank">
-                <img class="link-icon" src="https://www.baidu.com/favicon.ico" alt="Baidu">
-                <span class="link-text">Baidu</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://www.youtube.com" target="_blank">
-                <img class="link-icon" src="https://www.youtube.com/favicon.ico" alt="YouTube">
-                <span class="link-text">Youtube</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://mail.google.com/mail/u/0/" target="_blank">
-                <img class="link-icon" src="https://mail.google.com/favicon.ico" alt="Gmail">
-                <span class="link-text">Gmail</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://github.com" target="_blank">
-                <img class="link-icon" src="https://github.com/favicon.ico" alt="GitHub">
-                <span class="link-text">GitHub</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://ip.sb" target="_blank">
-                <img class="link-icon" src="https://ip.sb/favicon.ico" alt="IP SB">
-                <span class="link-text">ip.sb</span>
-            </a>
-        </div>
-        
-        <!-- 第二行 -->
-        <div class="link-item">
-            <a href="https://dash.cloudflare.com" target="_blank">
-                <img class="link-icon" src="https://www.cloudflare.com/favicon.ico" alt="Cloudflare">
-                <span class="link-text">Cloudflare</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://chat.openai.com" target="_blank">
-                <img class="link-icon" src="https://chat.openai.com/favicon.ico" alt="ChatGPT">
-                <span class="link-text">Chatgpt</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://huggingface.co" target="_blank">
-                <img class="link-icon" src="https://huggingface.co/favicon.ico" alt="Hugging Face">
-                <span class="link-text">Huggingface</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://www.itdog.cn" target="_blank">
-                <i class="fas fa-network-wired link-icon"></i>
-                <span class="link-text">ITDOG - 在线ping</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://ping0.cc" target="_blank">
-                <i class="fas fa-database link-icon"></i>
-                <span class="link-text">Ping0</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="#" target="_blank">
-                <i class="fas fa-fingerprint link-icon"></i>
-                <span class="link-text">浏览器指纹</span>
-            </a>
-        </div>
-        
-        <!-- 第三行 -->
-        <div class="link-item">
-            <a href="https://ssss.nyc.mn" target="_blank">
-                <i class="fas fa-tachometer-alt link-icon"></i>
-                <span class="link-text">nezha面板</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://hoppscotch.io" target="_blank">
-                <img class="link-icon" src="https://discord.com/favicon.ico" alt="Discord">
-                <span class="link-text">Api测试</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://who.cx" target="_blank">
-                <i class="fas fa-globe link-icon"></i>
-                <span class="link-text">who.cx</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://www.domcomp.com" target="_blank">
-                <i class="fas fa-tags link-icon"></i>
-                <span class="link-text">域名比价</span>
-            </a>
-        </div>
-        
-        <div class="link-item">
-            <a href="https://www.nodeseek.com" target="_blank">
-                <i class="fas fa-server link-icon"></i>
-                <span class="link-text">NodeSeek</span>
-            </a>
-        </div>
-        <div class="link-item">
-            <a href="https://linux.do" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">Linux do</span>
-            </a>
-        </div>
-        
-        <!-- 第四行 -->
-        <div class="link-item">
-            <a href="https://music.gvrander.eu.org" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">在线音乐</span>
-            </a>           
-        </div>
-        <div class="link-item">
-            <a href="https://www.freereceivesms.com" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">免费接码</span>
-            </a> 
-        </div>
-        <div class="link-item">
-            <a href="https://sublink.eooce.com" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">订阅转换</span>
-            </a> 
-        </div>
-        <div class="link-item">
-            <a href="https://ssh.eooce.com" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">webssh</span>
-            </a> 
-        </div>
-        <div class="link-item">
-            <a href="https://filebox.nnuu.nyc.mn" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">文件快递柜</span>
-            </a> 
-        </div>
-        <div class="link-item">
-            <a href="https://address.nnuu.nyc.mn" target="_blank">
-                <i class="fab fa-linux link-icon"></i>
-                <span class="link-text">真实地址生成</span>
-            </a> 
-        </div>
 
-        <!-- 版权 -->
-        <div class="foot_marker">
-        <a href="https://github.com/eooce" target="_blank">Powered by eooce</a>
+    <div class="sidebar">
+        <h2>AI 设置中心</h2>
+        <div class="config-group">
+            <label for="apiKey">DeepSeek API Key</label>
+            <input type="password" id="apiKey" placeholder="sk-...">
+        </div>
+        <div class="config-group">
+            <label for="modelSelect">选择模型</label>
+            <select id="modelSelect">
+                <option value="deepseek-chat">DeepSeek-V3 (聊天对话)</option>
+                <option value="deepseek-reasoner">DeepSeek-R1 (深度思考版)</option>
+            </select>
+        </div>
+        <div class="tip-box">
+            <strong>💡 说明：</strong><br>
+            本网页为纯前端单文件，您的 API Key <b>只会</b>保存在您的本地浏览器中，直接与官方服务器通信，绝不经过任何第三方服务器，请放心使用。<br>
+            👉 <a href="https://platform.deepseek.com/" target="_blank">没有Key？点击去官方申请</a>
+        </div>
     </div>
 
-    <script>
-        document.querySelectorAll('.link-item:not(.empty)').forEach(item => {
-            const icon = item.querySelector('img.link-icon');
-            if (icon) {
-                icon.onerror = function() {
-                    this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40NzcgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMnptMCAyYzQuNDE4IDAgOCAzLjU4MiA4IDhzLTMuNTgyIDgtOCA4LTgtMy41ODItOC04IDMuNTgyLTggOC04eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==';
-                }
+    <div class="main-chat">
+        <div class="chat-window" id="chatWindow">
+            <div class="message ai-message">你好！我是你的专属 AI 助手。请在左侧填入你的 DeepSeek API Key，然后就可以开始和我对话啦！</div>
+        </div>
+
+        <div class="input-area">
+            <textarea id="userInput" placeholder="输入您的问题... (按 Enter 发送，Shift+Enter 换行)"></textarea>
+            <button id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+<script>
+    const chatWindow = document.getElementById('chatWindow');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const apiKeyInput = document.getElementById('apiKey');
+    const modelSelect = document.getElementById('modelSelect');
+
+    // 页面加载时自动读取本地保存的 Key
+    if (localStorage.getItem('ds_api_key')) {
+        apiKeyInput.value = localStorage.getItem('ds_api_key');
+    }
+
+    // 监听 Key 的输入，实时保存到浏览器本地缓存
+    apiKeyInput.addEventListener('input', () => {
+        localStorage.setItem('ds_api_key', apiKeyInput.value.trim());
+    });
+
+    // 监听回车键
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    async function sendMessage() {
+        const key = apiKeyInput.value.trim();
+        const text = userInput.value.trim();
+        const model = modelSelect.value;
+
+        if (!key) {
+            alert('请先在左侧输入您的 DeepSeek API Key！');
+            return;
+        }
+        if (!text) return;
+
+        // 1. 发送用户消息并清空输入框
+        appendMessage(text, 'user-message');
+        userInput.value = '';
+        toggleInput(true);
+
+        // 2. 创建 AI 的流式打字机气泡
+        const aiMessageDiv = appendMessage('AI正在思考...', 'ai-message');
+
+        try {
+            // 3. 直接调用 DeepSeek 官方接口（支持流式传输）
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${key}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: "system", content: "你是一个全能的AI智能助手，请用专业、详尽且友善的语言回答用户。" },
+                        { role: "user", content: text }
+                    ],
+                    stream: true // 开启流式传输
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `HTTP 错误代码: ${response.status}`);
             }
-        });
-    </script>
-</body>
-</html>
+
+            // 4. 清空“正在思考”提示，准备接收打字机输出
+            aiMessageDiv.innerText = '';
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let buffer = '';
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                // 解码获取到的文本数据片段
+                buffer += decoder.
