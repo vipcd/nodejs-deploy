@@ -1,7 +1,13 @@
 runtime:
-  type: nodejs
+  type: docker
+  image: .
 
 version: 1
+
+services:
+  node:
+    ports:
+      - "3000:3000"
 
 commands:
   build:
