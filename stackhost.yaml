@@ -1,15 +1,7 @@
 runtime:
-  image: node:20
-
-version: 1
-
-services:
-  node:
-    ports:
-      - "3000:3000"
+  image: node:22
 
 commands:
   build:
     - npm install
-
   start: npm start
